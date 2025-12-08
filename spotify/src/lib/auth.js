@@ -1,3 +1,6 @@
+
+// Funciones auxiliares para OAuth y gestión de tokens
+
 // Generar string aleatorio para el parámetro 'state'
 export function generateRandomString(length) {
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -16,7 +19,7 @@ export function getSpotifyAuthUrl() {
 
   // Guardar el state para validación posterior (prevenir CSRF)
   if (typeof window !== 'undefined') {
-    localStorage.setItem('spotify_auth_state', state);
+    sessionStorage.setItem('spotify_auth_state', state); //Usando sessionStorage en lugar de localStorage
   }
 
   const scope = [
@@ -40,6 +43,8 @@ export function getSpotifyAuthUrl() {
 
 // Guardar tokens en localStorage
 export function saveTokens(accessToken, refreshToken, expiresIn) {
+  if (typeof window === 'undefined') return;
+
   const expirationTime = Date.now() + expiresIn * 1000;
   localStorage.setItem('spotify_token', accessToken);
   localStorage.setItem('spotify_refresh_token', refreshToken);
@@ -48,17 +53,25 @@ export function saveTokens(accessToken, refreshToken, expiresIn) {
 
 // Obtener token actual (con verificación de expiración)
 export function getAccessToken() {
+  if (typeof window === 'undefined') return null;
+
   const token = localStorage.getItem('spotify_token');
   const expiration = localStorage.getItem('spotify_token_expiration');
-  
+
   if (!token || !expiration) return null;
-  
+
   // Si el token expiró, retornar null
   if (Date.now() > parseInt(expiration)) {
     return null;
   }
-  
+
   return token;
+}
+
+// Obtener refresh token
+export function getRefreshToken() {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem('spotify_refresh_token');
 }
 
 // Verificar si hay token válido
@@ -68,6 +81,7 @@ export function isAuthenticated() {
 
 // Cerrar sesión
 export function logout() {
+  if (typeof window === 'undefined') return;
   localStorage.removeItem('spotify_token');
   localStorage.removeItem('spotify_refresh_token');
   localStorage.removeItem('spotify_token_expiration');
