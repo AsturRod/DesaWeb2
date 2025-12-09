@@ -1,5 +1,6 @@
 'use client';
 
+
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { isAuthenticated, getSpotifyAuthUrl, logout } from '@/lib/auth';
@@ -7,7 +8,9 @@ import { getCurrentUser, generatePlaylist } from '@/lib/spotify';
 import Header from '@/components/Header';
 import GenreWidget from '@/components/widgets/GenreWidget';
 import PopularityWidget from '@/components/widgets/PopularityWidget';
+import DecadeWidget from '@/components/widgets/DecadeWidget';
 import PlaylistDisplay from '@/components/PlaylistDisplay';
+
 
 export default function DashboardPage(){
   const router = useRouter();
@@ -15,13 +18,17 @@ export default function DashboardPage(){
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+
   //Estado de los widgets
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [selectedPopularity, setSelectedPopularity] = useState([0, 100]);
+  const [selectedDecades, setSelectedDecades] = useState([]);
+
 
   //Estado de la playlist generada
   const [playlist, setPlaylist] = useState([]);
   const [generatingPlaylist, setGeneratingPlaylist] = useState(false);
+
 
   //Redirigir si no está autenticado
   useEffect(() => {
@@ -30,9 +37,11 @@ export default function DashboardPage(){
       return;
     }
 
+
     //Cargar información del usuario
     fetchUser();
   }, [router]);
+
 
   async function fetchUser() {
     try {
@@ -49,16 +58,19 @@ export default function DashboardPage(){
     }
   }
 
+
   //Generar playlist basada en preferencias
   async function handleGeneratePlaylist() {
     setGeneratingPlaylist(true);
+    setError(null);
     try {
       const preferences = {
         artists: [],
         genres: selectedGenres,
-        decades: [],
+        decades: selectedDecades,
         popularity: selectedPopularity
       };
+
 
       const tracks = await generatePlaylist(preferences);
       setPlaylist(tracks);
@@ -70,13 +82,16 @@ export default function DashboardPage(){
     }
   }
 
+
   const handleRemoveTrack = (trackId) => {
     setPlaylist(playlist.filter(track => track.id !== trackId));
   };
 
+
   const handleToggleFavorite = (track) => {
     const favorites = JSON.parse(localStorage.getItem('favorite_tracks') || '[]');
     const isFavorite = favorites.find(f => f.id === track.id);
+
 
     if (isFavorite) {
       const updated = favorites.filter(f => f.id !== track.id);
@@ -87,9 +102,11 @@ export default function DashboardPage(){
     }
   };
 
+
   const handleRefreshPlaylist = async () => {
     await handleGeneratePlaylist();
   };
+
 
   if (loading) {
     return (
@@ -99,10 +116,12 @@ export default function DashboardPage(){
     );
   }
 
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-900 via-black to-black text-white">
       {/* Header */}
       <Header user={user} />
+
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -112,10 +131,12 @@ export default function DashboardPage(){
           </div>
         )}
 
+
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Widgets Sidebar */}
           <div className="lg:col-span-1 space-y-4">
             <h2 className="text-2xl font-bold mb-6">Preferencias</h2>
+
 
             {/* Genre Widget */}
             <GenreWidget
@@ -123,11 +144,19 @@ export default function DashboardPage(){
               onGenresChange={setSelectedGenres}
             />
 
+
             {/* Popularity Widget */}
             <PopularityWidget
               selectedPopularity={selectedPopularity}
               onPopularityChange={setSelectedPopularity}
             />
+
+
+            {/* Decade Widget */}
+            <DecadeWidget
+              onDecadesChange={setSelectedDecades}
+            />
+
 
             {/* Botón generate */}
             <button
@@ -138,6 +167,7 @@ export default function DashboardPage(){
               {generatingPlaylist ? 'Generando...' : 'Generar Playlist'}
             </button>
           </div>
+
 
           {/* Display Playlist */}
           <div className="lg:col-span-3">
