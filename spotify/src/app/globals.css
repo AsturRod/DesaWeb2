@@ -1,9 +1,11 @@
 @import "tailwindcss";
 
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
+
 
 @theme inline {
   --color-background: var(--background);
@@ -12,6 +14,7 @@
   --font-mono: var(--font-geist-mono);
 }
 
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -19,8 +22,44 @@
   }
 }
 
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ===== SCROLLBAR PERSONALIZADO - bg-green-500 ===== */
+/* Chrome, Safari, Edge */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #22c55e;
+  border-radius: 10px;
+  border: 2px solid #1f2937;
+  transition: background 200ms ease, box-shadow 200ms ease;  
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #16a34a;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.4); 
+}
+
+/* Firefox */
+html {
+  scrollbar-color: #22c55e #1a1a1a;
+  scrollbar-width: thin;
+}
+
+body {
+  scrollbar-color: #22c55e #1a1a1a;
+  scrollbar-width: thin;
+}
+

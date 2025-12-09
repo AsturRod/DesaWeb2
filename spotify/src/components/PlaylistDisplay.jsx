@@ -65,7 +65,7 @@ export default function PlaylistDisplay({
       </div>
 
       {/* Tracks List */}
-      <div className="space-y-2 max-h-96 overflow-y-auto">
+      <div className="space-y-2 max-h-[600px] overflow-y-auto">
         {tracks.map((track, index) => (
           <TrackCard
             key={track.id}
