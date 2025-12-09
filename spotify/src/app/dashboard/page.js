@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { isAuthenticated, getSpotifyAuthUrl, logout } from '@/lib/auth';
 import { getCurrentUser, generatePlaylist } from '@/lib/spotify';
-import Header from '@/components/Header'; //pendiente
-import GenreWidget from '@/components/GenreWidget'; //pendiente
-import PlaylistWidget from '@/components/PlaylistWidget'; //pendiente
+import Header from '@/components/Header';
+import GenreWidget from '@/components/widgets/GenreWidget'; 
+import PlaylistDisplay from '@/components/PlaylistDisplay'; 
 
 export default function DashboardPage(){
     const router = useRouter();
@@ -97,7 +97,7 @@ export default function DashboardPage(){
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-gradient-to-br from-green-900  via-black to-black text-white">
       {/* Header */}
       <Header user={user} />
 
@@ -121,7 +121,7 @@ export default function DashboardPage(){
             />
 
             {/* Popularity Widget */}
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-700">
+            <div className="bg-stone-900 rounded-lg p-6">
               <h3 className="text-lg font-semibold mb-4">Popularidad</h3>
               <div className="space-y-4">
                 <div>
