@@ -81,7 +81,7 @@ export default function TrackWidget({ selectedTracks = [], onTracksChange }) {
               <button
                 key={track.id}
                 onClick={() => handleSelectTrack(track)}
-                className="w-full text-left px-3 py-2 hover:bg-stone-800 border-b border-gray-600 last:border-b-0 flex items-center gap-2"
+                className="w-full text-left px-3 py-2 hover:bg-gray-800 border-b border-gray-600 last:border-b-0 flex items-center gap-2"
               >
                 {track.album?.images?.[0] && (
                   <img 
