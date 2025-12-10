@@ -37,7 +37,7 @@ export default function ArtistWidget({ selectedArtists = [], onArtistsChange }) 
     return () => clearTimeout(searchTimeoutRef.current);
   }, [searchTerm]);
 
-  // Agregar artista a seleccionados
+
   const handleSelectArtist = (artist) => {
     const isSelected = selectedArtists.some(a => a.id === artist.id);
     
@@ -49,7 +49,7 @@ export default function ArtistWidget({ selectedArtists = [], onArtistsChange }) 
     setShowResults(false);
   };
 
-  // Remover artista de seleccionados
+  
   const handleRemoveArtist = (artistId) => {
     onArtistsChange(selectedArtists.filter(a => a.id !== artistId));
   };

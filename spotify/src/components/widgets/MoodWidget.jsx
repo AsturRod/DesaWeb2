@@ -105,9 +105,9 @@ export default function MoodWidget({ selectedMood = null, onMoodChange }) {
         {customMode ? '✓ Modo Personalizado' : '⚙️ Personalizar'}
       </button>
 
-      {/* Custom Sliders */}
+      {/* Sliders de Mood */}
       {customMode && (
-        <div className="space-y-4 bg-gray-700 p-3 rounded">
+        <div className="space-y-4 bg-stone-800 p-3 rounded">
           {/* Energy */}
           <div>
             <label className="text-xs font-semibold text-gray-300 block mb-2">

@@ -2,7 +2,7 @@
 
 import { getAccessToken, getRefreshToken } from '@/lib/auth';
 
-//Refrescar el token si está expirado
+
 
 async function ensureValidToken() {
   const token = getAccessToken();
@@ -41,7 +41,6 @@ async function ensureValidToken() {
   return token;
 }
 
-//Hacer una petición a la API de Spotify
  
 export async function spotifyRequest(endpoint, options = {}) {
   try {
@@ -58,7 +57,7 @@ export async function spotifyRequest(endpoint, options = {}) {
     });
 
     if (response.status === 401) {
-      // Token expirado, intentar refrescar
+      
       const newToken = await ensureValidToken();
       return spotifyRequest(endpoint, {
         ...options,
@@ -78,13 +77,13 @@ export async function spotifyRequest(endpoint, options = {}) {
   }
 }
 
-//Obtener información del usuario actual
+
 
 export async function getCurrentUser() {
   return spotifyRequest('/me');
 }
 
-//Buscar artistas, canciones, etc.
+
 export async function search(query, type = 'artist', limit = 10) {
   const params = new URLSearchParams({
     q: query,
@@ -95,18 +94,18 @@ export async function search(query, type = 'artist', limit = 10) {
   return spotifyRequest(`/search?${params.toString()}`);
 }
 
-//Obtener información de un artista
+
 export async function getArtist(artistId) {
   return spotifyRequest(`/artists/${artistId}`);
 }
 
-//Obtener top tracks de un artista
+
  
 export async function getArtistTopTracks(artistId, market = 'US') {
   return spotifyRequest(`/artists/${artistId}/top-tracks?market=${market}`);
 }
 
-//Obtener canciones top del usuario
+
  
 export async function getUserTopTracks(limit = 20, offset = 0, timeRange = 'medium_term') {
   const params = new URLSearchParams({
@@ -118,7 +117,7 @@ export async function getUserTopTracks(limit = 20, offset = 0, timeRange = 'medi
   return spotifyRequest(`/me/top/tracks?${params.toString()}`);
 }
 
-//Obtener artistas top del usuario
+
  
 export async function getUserTopArtists(limit = 20, offset = 0, timeRange = 'medium_term') {
   const params = new URLSearchParams({
@@ -130,13 +129,13 @@ export async function getUserTopArtists(limit = 20, offset = 0, timeRange = 'med
   return spotifyRequest(`/me/top/artists?${params.toString()}`);
 }
 
-//Crear playlist en Spotify
+
 export async function createPlaylist(playlistName, trackUris) {
   try {
     const user = await getCurrentUser();
     const userId = user.id;
 
-    // Crear la playlist
+   
     const createResponse = await spotifyRequest(`/users/${userId}/playlists`, {
       method: 'POST',
       body: JSON.stringify({
@@ -148,7 +147,7 @@ export async function createPlaylist(playlistName, trackUris) {
 
     const playlistId = createResponse.id;
 
-    // Agregar tracks a la playlist (máximo 100 por request)
+    
     for (let i = 0; i < trackUris.length; i += 100) {
       const chunk = trackUris.slice(i, i + 100);
       await spotifyRequest(`/playlists/${playlistId}/tracks`, {
@@ -206,19 +205,19 @@ function simulateMoodFromTrackData(track, mood) {
   return checks.every(check => check);
 }
 
-//Generar playlist basada en preferencias
+
 export async function generatePlaylist(preferences) {
-  const { artists = [], tracks = [], genres = [], decades = [], popularity = null, mood = null, market = 'US' } = preferences;
+  const { artists = [], tracks = [], genres = [], decades = [], popularity = null, mood = null, market = 'ES' } = preferences;
   
   let allTracks = [];
   const selectedTrackIds = new Set(tracks.map(t => t.id));
 
-  // 0. PRIORIDAD: Agregar canciones seleccionadas (NUNCA se filtran)
+  
   if (tracks.length > 0) {
     allTracks.push(...tracks);
   }
 
-  // 1. Obtener top tracks de artistas seleccionados
+  
   for (const artist of artists) {
     try {
       const response = await spotifyRequest(`/artists/${artist.id}/top-tracks?market=${market}`);
@@ -230,7 +229,7 @@ export async function generatePlaylist(preferences) {
     }
   }
 
-  // 2. Si hay géneros, buscar tracks
+  
   if (genres.length > 0) {
     for (const genre of genres) {
       try {
@@ -245,7 +244,7 @@ export async function generatePlaylist(preferences) {
     }
   }
 
-  // 3. Si no hay suficientes tracks, usar búsqueda genérica
+  
   if (allTracks.length < 5 && (genres.length > 0 || artists.length > 0)) {
     try {
       const query = genres.length > 0 ? genres[0] : 'popular';
@@ -258,12 +257,12 @@ export async function generatePlaylist(preferences) {
     }
   }
 
-  // 4. Si no hay géneros ni artistas, error
+  
   if (allTracks.length === 0 && genres.length === 0 && artists.length === 0) {
     throw new Error('Selecciona al menos un género, artista o canción');
   }
 
-  // 5. Filtrar por decade (EXCEPTO las canciones seleccionadas)
+  
   if (decades.length > 0) {
     const beforeDecade = allTracks.length;
     const filteredByDecade = allTracks.filter(track => {
@@ -278,7 +277,7 @@ export async function generatePlaylist(preferences) {
       });
     });
     
-    // Solo aplicar filtro si quedan al menos 5 canciones
+  
     if (filteredByDecade.length >= 5) {
       allTracks = filteredByDecade;
       console.log(`Decade filter: ${beforeDecade} → ${allTracks.length} tracks`);
@@ -287,7 +286,7 @@ export async function generatePlaylist(preferences) {
     }
   }
 
-  // 6. Filtrar por popularidad (EXCEPTO las canciones seleccionadas)
+  
   if (popularity && popularity[0] > 0 || popularity[1] < 100) {
     const beforePopularity = allTracks.length;
     const [min, max] = popularity;
@@ -299,7 +298,7 @@ export async function generatePlaylist(preferences) {
       return track.popularity >= min && track.popularity <= max;
     });
     
-    // Solo aplicar filtro si quedan al menos 5 canciones
+    
     if (filteredByPopularity.length >= 5) {
       allTracks = filteredByPopularity;
       console.log(`Popularity filter: ${beforePopularity} → ${allTracks.length} tracks`);
@@ -308,7 +307,7 @@ export async function generatePlaylist(preferences) {
     }
   }
 
-  // 7. Filtrar por mood simulado (usando datos disponibles)
+  
   if (mood) {
     const beforeMood = allTracks.length;
     const filteredByMood = allTracks.filter(track => {
@@ -327,7 +326,7 @@ export async function generatePlaylist(preferences) {
     }
   }
 
-  // 8. Eliminar duplicados y limitar a 30 canciones
+
   const uniqueMap = new Map();
   
   for (const track of tracks) {

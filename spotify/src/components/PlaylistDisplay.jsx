@@ -17,7 +17,7 @@ export default function PlaylistDisplay({
 
 
   useEffect(() => {
-    // Cargar favoritos del localStorage
+    
     const favorites = JSON.parse(localStorage.getItem('favorite_tracks') || '[]');
     const favoriteIdSet = new Set(favorites.map(f => f.id));
     setFavoriteIds(favoriteIdSet);
@@ -28,7 +28,7 @@ export default function PlaylistDisplay({
     onToggleFavorite(track);
 
 
-    // Actualizar estado local
+    
     const newFavorites = new Set(favoriteIds);
     if (newFavorites.has(track.id)) {
       newFavorites.delete(track.id);
@@ -70,21 +70,21 @@ export default function PlaylistDisplay({
             disabled={isRefreshing}
             className="bg-green-500 hover:bg-green-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-black font-bold py-2 px-4 rounded transition"
           >
-            {isRefreshing ? 'Refrescando...' : '🔄 Refrescar'}
+            {isRefreshing ? 'Refrescando...' : 'Refrescar'}
           </button>
           {onSave && (
             <button
               onClick={onSave}
               className="bg-green-500 hover:bg-green-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-black font-bold py-2 px-4 rounded transition"
             >
-              💾 Guardar en Spotify
+              Guardar en Spotify
             </button>
           )}
         </div>
       </div>
 
 
-      {/* Tracks List */}
+      
       <div className="space-y-2 max-h-[600px] overflow-y-auto">
         {tracks.map((track, index) => (
           <TrackCard
@@ -99,7 +99,7 @@ export default function PlaylistDisplay({
       </div>
 
 
-      {/* Footer Info */}
+      {/* Footer */}
       <div className="mt-6 pt-4 border-t border-gray-700 text-sm text-gray-400">
         <p>💡 Haz clic en la x para eliminar la canción, click en la estrella para marcar en favoritos</p>
       </div>

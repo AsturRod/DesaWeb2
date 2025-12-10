@@ -42,7 +42,7 @@ export default function GenreWidget({ selectedGenres, onGenresChange }) {
     if (selectedGenres.includes(genre)) {
       onGenresChange(selectedGenres.filter(g => g !== genre));
     } else {
-      // Limitar a 5 géneros máximo
+      
       if (selectedGenres.length < 5) {
         onGenresChange([...selectedGenres, genre]);
       }
@@ -69,10 +69,10 @@ export default function GenreWidget({ selectedGenres, onGenresChange }) {
         </span>
       </button>
 
-      {/* Contenido Desplegable */}
+    
       {isOpen && (
         <div className="border-t border-gray-700 p-4 space-y-3">
-          {/* Selected Genres - Pills */}
+          
           {selectedGenres.length > 0 && (
             <div className="space-y-2">
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">

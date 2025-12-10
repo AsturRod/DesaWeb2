@@ -48,7 +48,7 @@ export default function PopularityWidget({ selectedPopularity, onPopularityChang
       {/* Contenido Desplegable */}
       {isOpen && (
         <div className="border-t border-gray-700 p-4 space-y-4 ">
-          {/* Range Display */}
+          
           <div className="p-3 bg-gradient-to-r from-purple-900/30 to-purple-800/30 border border-purple-700/50 rounded-lg text-center">
             <p className="text-white font-bold text-lg">
               {selectedPopularity[0]} - {selectedPopularity[1]}
@@ -56,7 +56,7 @@ export default function PopularityWidget({ selectedPopularity, onPopularityChang
             <p className="text-xs text-purple-300 mt-1">{getCategory()}</p>
           </div>
 
-          {/* Min Slider */}
+          
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-300">
               Mínimo: <span className="text-green-400 font-semibold">{selectedPopularity[0]}</span>
@@ -74,7 +74,7 @@ export default function PopularityWidget({ selectedPopularity, onPopularityChang
             />
           </div>
 
-          {/* Max Slider */}
+          
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-300">
               Máximo: <span className="text-green-400 font-semibold">{selectedPopularity[1]}</span>
@@ -92,7 +92,7 @@ export default function PopularityWidget({ selectedPopularity, onPopularityChang
             />
           </div>
 
-          {/* Legend */}
+          {/* Legenda */}
           <div className="pt-3 border-t border-gray-700 space-y-2 text-xs">
             <div className="flex items-center justify-between">
               <span className="text-gray-400">🔥 Hits mainstream</span>
@@ -108,7 +108,7 @@ export default function PopularityWidget({ selectedPopularity, onPopularityChang
             </div>
           </div>
 
-          {/* Info Box */}
+          {/* Info  */}
           <div className="p-2 bg-blue-900/20 border border-blue-700/30 rounded text-xs text-blue-300 text-center">
             Rango seleccionado: {selectedPopularity[1] - selectedPopularity[0]} puntos
           </div>

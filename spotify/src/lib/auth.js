@@ -2,7 +2,7 @@
 // Funciones auxiliares para OAuth y gestión de tokens
 
 
-// Generar string aleatorio para el parámetro 'state'
+
 export function generateRandomString(length) {
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let text = '';
@@ -20,7 +20,7 @@ export function getSpotifyAuthUrl() {
   const state = generateRandomString(16);
 
 
-  // Guardar el state para validación posterior (prevenir CSRF)
+  
   if (typeof window !== 'undefined') {
     sessionStorage.setItem('spotify_auth_state', state); 
   }
@@ -48,7 +48,7 @@ export function getSpotifyAuthUrl() {
 }
 
 
-// Guardar tokens en localStorage
+
 export function saveTokens(accessToken, refreshToken, expiresIn) {
   if (typeof window === 'undefined') return;
 
@@ -60,7 +60,7 @@ export function saveTokens(accessToken, refreshToken, expiresIn) {
 }
 
 
-// Obtener token actual (con verificación de expiración)
+
 export function getAccessToken() {
   if (typeof window === 'undefined') return null;
 
@@ -72,7 +72,7 @@ export function getAccessToken() {
   if (!token || !expiration) return null;
 
 
-  // Si el token expiró, retornar null
+  
   if (Date.now() > parseInt(expiration)) {
     return null;
   }
@@ -82,20 +82,20 @@ export function getAccessToken() {
 }
 
 
-// Obtener refresh token
+
 export function getRefreshToken() {
   if (typeof window === 'undefined') return null;
   return localStorage.getItem('spotify_refresh_token');
 }
 
 
-// Verificar si hay token válido
+
 export function isAuthenticated() {
   return getAccessToken() !== null;
 }
 
 
-// Cerrar sesión
+
 export function logout() {
   if (typeof window === 'undefined') return;
   localStorage.removeItem('spotify_token');

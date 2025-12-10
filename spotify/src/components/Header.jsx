@@ -14,13 +14,17 @@ export default function Header({ user }) {
   return (
     <header className="bg-black bg-opacity-80 border-b border-green-500 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-        {/* Logo/Title */}
-        <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold text-green-500">🎵 Playlist Generator</h1>
+        {/* Logo/Title - Más a la izquierda */}
+        <div className="shrink-0 cursor-pointer" onClick={() => router.push('/dashboard')}>
+          <img
+            src="/taste_mixer_logo.png"
+            alt="Playlist Generator"
+            className="h-13 object-contain"
+          />
         </div>
 
         {/* Navigation */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-6 flex-1 justify-center">
           <button
             onClick={() => router.push('/dashboard')}
             className="text-gray-300 hover:text-green-500 transition font-semibold"
@@ -42,7 +46,7 @@ export default function Header({ user }) {
         </nav>
 
         {/* User Info & Logout */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 flex-shrink-0">
           {user && (
             <div className="flex items-center gap-3">
               {user.images && user.images[0] && (

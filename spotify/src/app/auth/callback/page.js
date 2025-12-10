@@ -31,7 +31,7 @@ export default function CallbackPage() {
       return;
     }
 
-    //Usamos sessionStorage en lugar de localStorage
+    
     const savedState = sessionStorage.getItem('spotify_auth_state');
     if (!state || state !== savedState) {
       setError('Error de validación de seguridad (CSRF). Intenta iniciar sesión de nuevo.');
@@ -40,13 +40,13 @@ export default function CallbackPage() {
       return;
     }
 
-    // Limpiar state después de validar
+    
     sessionStorage.removeItem('spotify_auth_state');
 
-    // Marcar como procesado
+    
     hasProcessed.current = true;
 
-    // Intercambiar código por token
+   
     const exchangeCodeForToken = async (code) => {
       try {
         const response = await fetch('/api/spotify-token', {
@@ -63,10 +63,10 @@ export default function CallbackPage() {
           throw new Error(data.error || 'Error al obtener token');
         }
 
-        // Guardar tokens
+        
         saveTokens(data.access_token, data.refresh_token, data.expires_in);
 
-        // Redirigir al dashboard
+        
         router.push('/dashboard');
       } catch (error) {
         console.error('Error:', error);
@@ -87,7 +87,7 @@ export default function CallbackPage() {
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
           <h1 className="text-2xl font-bold text-white mb-2">Autenticando...</h1>
           <p className="text-gray-400">
-            Por favor espera mientras completamos tu autenticación con Spotify
+            Por favor espera mientras se completa tu autenticación con Spotify
           </p>
         </div>
       </div>

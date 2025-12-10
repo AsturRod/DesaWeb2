@@ -21,29 +21,29 @@ export default function DecadeWidget({ onDecadesChange }) {
     let newSelected;
 
     if (selectedDecades.some(d => d.label === decade.label)) {
-      // Deseleccionar si ya está seleccionado
+      
       newSelected = selectedDecades.filter(d => d.label !== decade.label);
     } else {
-      // Seleccionar si no está
+      
       newSelected = [...selectedDecades, decade];
     }
 
-    // Ordenar por año
+    
     newSelected.sort((a, b) => a.min - b.min);
     setSelectedDecades(newSelected);
 
-    // Convertir a formato que espera spotify.js: ['1950', '1960', ...]
+   
     const decadesToPass = newSelected.map(d => d.min.toString());
     onDecadesChange(decadesToPass);
   };
 
   const handleSelectAll = () => {
     if (selectedDecades.length === decades.length) {
-      // Deseleccionar todos
+      
       setSelectedDecades([]);
       onDecadesChange([]);
     } else {
-      // Seleccionar todos
+     
       setSelectedDecades(decades);
       const allDecades = decades.map(d => d.min.toString());
       onDecadesChange(allDecades);
@@ -86,7 +86,7 @@ export default function DecadeWidget({ onDecadesChange }) {
       {/* Contenido Desplegable */}
       {isOpen && (
         <div className="border-t border-gray-700 p-4 space-y-4 ">
-          {/* Control Buttons */}
+          
           <div className="flex gap-2">
             <button
               onClick={handleSelectAll}
@@ -128,7 +128,7 @@ export default function DecadeWidget({ onDecadesChange }) {
             })}
           </div>
 
-          {/* Selected Info */}
+          {/* Info */}
           {selectedDecades.length > 0 && (
             <div className="pt-3 border-t border-gray-700 space-y-2">
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
@@ -149,7 +149,7 @@ export default function DecadeWidget({ onDecadesChange }) {
             </div>
           )}
 
-          {/* Timeline Info */}
+          
           {selectedDecades.length > 0 && (
             <div className="p-3 bg-blue-900/20 border border-blue-700/30 rounded-lg text-xs text-blue-300 text-center">
               📅 {getDecadeRange()}

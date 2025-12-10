@@ -1,6 +1,5 @@
 'use client';
 
-
 export default function TrackCard({
   track,
   index,
@@ -51,13 +50,17 @@ export default function TrackCard({
 
       {/* Acciones */}
       <div className="flex items-center gap-2 flex-shrink-0">
-        {/* Botón Abrir en Spotify */}
+        {/* Botón Abrir en Spotify - Logo PNG */}
         <button
           onClick={handleOpenInSpotify}
-          className="p-2 rounded text-gray-500 hover:text-green-500 transition"
+          className="p-2 rounded opacity-70 hover:opacity-100 transition hover:scale-110 transform"
           title="Abrir en Spotify"
         >
-          🎵
+          <img
+            src="/logo_1.png"
+            alt="Spotify"
+            className="w-5 h-5"
+          />
         </button>
 
         {/* Botón Favoritos */}

@@ -37,7 +37,7 @@ export default function TrackWidget({ selectedTracks = [], onTracksChange }) {
     return () => clearTimeout(searchTimeoutRef.current);
   }, [searchTerm]);
 
-  // Agregar canción a seleccionadas
+  
   const handleSelectTrack = (track) => {
     const isSelected = selectedTracks.some(t => t.id === track.id);
     
@@ -49,7 +49,7 @@ export default function TrackWidget({ selectedTracks = [], onTracksChange }) {
     setShowResults(false);
   };
 
-  // Eliminar canción de seleccionadas
+  
   const handleRemoveTrack = (trackId) => {
     onTracksChange(selectedTracks.filter(t => t.id !== trackId));
   };
@@ -58,7 +58,7 @@ export default function TrackWidget({ selectedTracks = [], onTracksChange }) {
     <div className=" p-4">
       <h3 className="text-lg font-semibold mb-3">🎵 Canciones</h3>
 
-      {/* Input de búsqueda */}
+      
       <div className="relative mb-4">
         <input
           type="text"
@@ -74,7 +74,7 @@ export default function TrackWidget({ selectedTracks = [], onTracksChange }) {
           </div>
         )}
 
-        {/* Dropdown de resultados */}
+        
         {showResults && searchResults.length > 0 && (
           <div className="absolute top-full left-0 right-0 bg-stone-800 rounded mt-1 max-h-48 overflow-y-auto z-10">
             {searchResults.map((track) => (
@@ -105,7 +105,7 @@ export default function TrackWidget({ selectedTracks = [], onTracksChange }) {
         )}
       </div>
 
-      {/* Canciones seleccionadas */}
+      
       {selectedTracks.length > 0 && (
         <div className="space-y-2">
           {selectedTracks.map((track) => (
