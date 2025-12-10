@@ -65,7 +65,7 @@ export default function ArtistWidget({ selectedArtists = [], onArtistsChange }) 
           placeholder="Buscar artista..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-3 py-2 rounded border border-gray-600 focus:outline-none"
+          className="w-full px-3 py-2 text-white rounded border border-gray-600 focus:border-green-500 focus:outline-none"
         />
 
         {loading && (

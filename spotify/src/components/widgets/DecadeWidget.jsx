@@ -14,6 +14,7 @@ export default function DecadeWidget({ onDecadesChange }) {
     { label: '2020s', min: 2020, max: 2029 },
   ];
 
+  const [isOpen, setIsOpen] = useState(false);
   const [selectedDecades, setSelectedDecades] = useState([]);
 
   const handleDecadeChange = (decade) => {
@@ -54,81 +55,106 @@ export default function DecadeWidget({ onDecadesChange }) {
     onDecadesChange([]);
   };
 
+  const getDecadeRange = () => {
+    if (selectedDecades.length === 0) return '';
+    const sorted = [...selectedDecades].sort((a, b) => a.min - b.min);
+    const first = sorted[0].label;
+    const last = sorted[sorted.length - 1].label;
+    return first === last ? first : `${first} - ${last}`;
+  };
+
   return (
-    <div className="flex flex-col gap-4 p-5">
-      {/* Header */}
-      <div className="flex justify-between items-center gap-3">
-        <h3 className="text-base font-semibold text-white dark:text-white tracking-tight">
-           Decadas
-        </h3>
-        <div className="flex gap-2">
-          <button
-            onClick={handleSelectAll}
-            title={selectedDecades.length === decades.length ? 'Deselect all' : 'Select all'}
-            className="px-3 py-1.5 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 hover:border-green-500 transition-all"
-          >
-            {selectedDecades.length === decades.length ? '✓ All' : 'All'}
-          </button>
+    <div className="rounded-lg overflow-hidden ">
+      {/* Header - Desplegable */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-700/50 transition"
+      >
+        <div className="text-left">
+          <h3 className="font-semibold text-white">⏰ Décadas</h3>
           {selectedDecades.length > 0 && (
-            <button
-              onClick={handleClearSelection}
-              title="Clear selection"
-              className="px-3 py-1.5 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 hover:border-red-500 transition-all"
-            >
-              ✕ Clear
-            </button>
+            <p className="text-xs text-green-400 mt-1">
+              {selectedDecades.length} seleccionada{selectedDecades.length !== 1 ? 's' : ''}
+            </p>
           )}
         </div>
-      </div>
+        <span className={`text-xl transition-transform ${isOpen ? 'rotate-180' : ''}`}>
+          ▼
+        </span>
+      </button>
 
-      {/* Decades Grid */}
-      <div className="grid grid-cols-2 gap-3">
-        {decades.map((decade) => {
-          const isSelected = selectedDecades.some(d => d.label === decade.label);
-          return (
-            <label
-              key={decade.label}
-              className={`flex items-center gap-2 p-2.5 rounded-md border transition-all cursor-pointer ${
-                isSelected
-                  ? 'bg-green-500 text-white border-green-600 shadow-md'
-                  : 'bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 hover:border-green-500'
+      {/* Contenido Desplegable */}
+      {isOpen && (
+        <div className="border-t border-gray-700 p-4 space-y-4 ">
+          {/* Control Buttons */}
+          <div className="flex gap-2">
+            <button
+              onClick={handleSelectAll}
+              className={`flex-1 px-3 py-2 text-xs font-semibold rounded-lg transition transform hover:scale-105 ${
+                selectedDecades.length === decades.length
+                  ? 'bg-green-500 text-black'
+                  : 'bg-stone-800 text-white hover:bg-gray-600'
               }`}
             >
-              <input
-                type="checkbox"
-                checked={isSelected}
-                onChange={() => handleDecadeChange(decade)}
-                className="w-4 h-4 cursor-pointer accent-green-500"
-              />
-              <span className="text-sm font-medium">{decade.label}</span>
-            </label>
-          );
-        })}
-      </div>
-
-      {/* Selected Info */}
-      {selectedDecades.length > 0 && (
-        <div className="flex flex-col gap-2 p-3 bg-blue-50 dark:bg-blue-900 dark:bg-opacity-30 border-l-3 border-green-500 rounded-sm">
-          <p className="text-xs font-medium text-gray-600 dark:text-gray-300">
-            {selectedDecades.length} decade{selectedDecades.length !== 1 ? 's' : ''} selected
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {selectedDecades.map(decade => (
-              <span
-                key={decade.label}
-                className="inline-flex items-center gap-1 px-2.5 py-1 bg-green-500 text-white text-xs font-medium rounded-full"
+              {selectedDecades.length === decades.length ? '✓ Todas' : 'Todas'}
+            </button>
+            {selectedDecades.length > 0 && (
+              <button
+                onClick={handleClearSelection}
+                className="flex-1 px-3 py-2 text-xs font-semibold rounded-lg bg-gray-700/50 text-white hover:bg-gray-600 transition transform hover:scale-105"
               >
-                {decade.label}
-                <button
-                  onClick={() => handleDecadeChange(decade)}
-                  aria-label={`Remove ${decade.label}`}
-                  className="ml-1 hover:opacity-70 transition-opacity font-bold"
-                >
-                  ×
-                </button>
-              </span>
-            ))}
+                ✕ Limpiar
+              </button>
+            )}
           </div>
+
+          {/* Decades Grid */}
+          <div className="grid grid-cols-2 gap-2">
+            {decades.map((decade) => {
+              const isSelected = selectedDecades.some(d => d.label === decade.label);
+              return (
+                <button
+                  key={decade.label}
+                  onClick={() => handleDecadeChange(decade)}
+                  className={`px-3 py-2 rounded-lg text-sm font-semibold transition transform ${
+                    isSelected
+                      ? 'bg-green-500 text-black scale-105'
+                      : 'bg-stone-800 text-white hover:bg-gray-600 hover:scale-105'
+                  }`}
+                >
+                  {decade.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Selected Info */}
+          {selectedDecades.length > 0 && (
+            <div className="pt-3 border-t border-gray-700 space-y-2">
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+                Seleccionadas ({selectedDecades.length}/{decades.length})
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {selectedDecades.map(decade => (
+                  <button
+                    key={decade.label}
+                    onClick={() => handleDecadeChange(decade)}
+                    className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-black text-xs font-semibold rounded-full transition transform hover:scale-105"
+                  >
+                    {decade.label}
+                    <span className="ml-1 font-bold">×</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Timeline Info */}
+          {selectedDecades.length > 0 && (
+            <div className="p-3 bg-blue-900/20 border border-blue-700/30 rounded-lg text-xs text-blue-300 text-center">
+              📅 {getDecadeRange()}
+            </div>
+          )}
         </div>
       )}
     </div>

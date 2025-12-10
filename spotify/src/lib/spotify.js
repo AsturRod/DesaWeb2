@@ -171,12 +171,10 @@ function simulateMoodFromTrackData(track, mood) {
   const checks = [];
 
   // Energy simulado: basado en popularidad y duración
-  // Canciones populares y cortas = más energía
   if (mood.energy) {
     const [min, max] = mood.energy;
     const simulated_energy = (track.popularity / 100) * 0.7 + 
                             (Math.min(track.duration_ms, 300000) / 300000) * 0.3;
-    // Expandir rango un 20% para mayor flexibilidad
     checks.push(simulated_energy >= (min - 0.2) && simulated_energy <= (max + 0.2));
   }
 
@@ -184,7 +182,6 @@ function simulateMoodFromTrackData(track, mood) {
   if (mood.danceability) {
     const [min, max] = mood.danceability;
     const simulated_danceability = track.popularity / 100;
-    // Expandir rango un 20%
     checks.push(simulated_danceability >= (min - 0.2) && simulated_danceability <= (max + 0.2));
   }
 
@@ -193,7 +190,6 @@ function simulateMoodFromTrackData(track, mood) {
     const [min, max] = mood.valence;
     const year = new Date(track.album?.release_date).getFullYear();
     const simulated_valence = Math.min(1, (year - 1990) / 34) * 0.6 + (track.popularity / 100) * 0.4;
-    // Expandir rango un 20%
     checks.push(simulated_valence >= (min - 0.2) && simulated_valence <= (max + 0.2));
   }
 
@@ -203,7 +199,6 @@ function simulateMoodFromTrackData(track, mood) {
     const year = new Date(track.album?.release_date).getFullYear();
     const simulated_acousticness = Math.max(0, 1 - (track.popularity / 100)) * 0.7 + 
                                   Math.max(0, (2024 - year) / 100) * 0.3;
-    // Expandir rango un 20%
     checks.push(simulated_acousticness >= (min - 0.2) && simulated_acousticness <= (max + 0.2));
   }
 
@@ -270,7 +265,8 @@ export async function generatePlaylist(preferences) {
 
   // 5. Filtrar por decade (EXCEPTO las canciones seleccionadas)
   if (decades.length > 0) {
-    allTracks = allTracks.filter(track => {
+    const beforeDecade = allTracks.length;
+    const filteredByDecade = allTracks.filter(track => {
       if (selectedTrackIds.has(track.id)) {
         return true;
       }
@@ -281,31 +277,54 @@ export async function generatePlaylist(preferences) {
         return year >= decadeStart && year < decadeStart + 10;
       });
     });
+    
+    // Solo aplicar filtro si quedan al menos 5 canciones
+    if (filteredByDecade.length >= 5) {
+      allTracks = filteredByDecade;
+      console.log(`Decade filter: ${beforeDecade} → ${allTracks.length} tracks`);
+    } else {
+      console.log(`Decade filter too restrictive (${filteredByDecade.length} tracks), ignoring`);
+    }
   }
 
   // 6. Filtrar por popularidad (EXCEPTO las canciones seleccionadas)
-  if (popularity) {
+  if (popularity && popularity[0] > 0 || popularity[1] < 100) {
+    const beforePopularity = allTracks.length;
     const [min, max] = popularity;
-    allTracks = allTracks.filter(track => {
+    const filteredByPopularity = allTracks.filter(track => {
       if (selectedTrackIds.has(track.id)) {
         return true;
       }
       
       return track.popularity >= min && track.popularity <= max;
     });
+    
+    // Solo aplicar filtro si quedan al menos 5 canciones
+    if (filteredByPopularity.length >= 5) {
+      allTracks = filteredByPopularity;
+      console.log(`Popularity filter: ${beforePopularity} → ${allTracks.length} tracks`);
+    } else {
+      console.log(`Popularity filter too restrictive (${filteredByPopularity.length} tracks), ignoring`);
+    }
   }
 
   // 7. Filtrar por mood simulado (usando datos disponibles)
   if (mood) {
     const beforeMood = allTracks.length;
-    allTracks = allTracks.filter(track => {
-      // Las canciones seleccionadas nunca se filtran
+    const filteredByMood = allTracks.filter(track => {
       if (selectedTrackIds.has(track.id)) {
         return true;
       }
       return simulateMoodFromTrackData(track, mood);
     });
-    console.log(`Mood filter (simulated): ${beforeMood} → ${allTracks.length} tracks`);
+    
+    // Solo aplicar filtro si quedan al menos 5 canciones
+    if (filteredByMood.length >= 5) {
+      allTracks = filteredByMood;
+      console.log(`Mood filter (simulated): ${beforeMood} → ${allTracks.length} tracks`);
+    } else {
+      console.log(`Mood filter too restrictive (${filteredByMood.length} tracks), ignoring`);
+    }
   }
 
   // 8. Eliminar duplicados y limitar a 30 canciones
@@ -324,7 +343,7 @@ export async function generatePlaylist(preferences) {
   const uniqueTracks = Array.from(uniqueMap.values()).slice(0, 30);
 
   if (uniqueTracks.length === 0) {
-    throw new Error('No se encontraron canciones con esos criterios');
+    throw new Error('No se encontraron canciones con esos criterios. Intenta con otros filtros.');
   }
 
   return uniqueTracks;

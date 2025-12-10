@@ -73,7 +73,7 @@ export default function MoodWidget({ selectedMood = null, onMoodChange }) {
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg p-4">
+    <div className=" p-4">
       <h3 className="text-lg font-semibold mb-4">🎵 Mood</h3>
 
       {/* Mood Buttons */}
@@ -85,7 +85,7 @@ export default function MoodWidget({ selectedMood = null, onMoodChange }) {
             className={`px-3 py-2 rounded text-sm font-medium transition ${
               selectedMood?.mood === key && !customMode
                 ? 'bg-green-600 text-white'
-                : 'bg-gray-700 text-gray-200 hover:bg-gray-600'
+                : 'bg-stone-800 text-gray-200 hover:bg-gray-600'
             }`}
           >
             {mood.name}
@@ -99,7 +99,7 @@ export default function MoodWidget({ selectedMood = null, onMoodChange }) {
         className={`w-full px-3 py-2 rounded text-sm font-medium transition mb-4 ${
           customMode
             ? 'bg-blue-600 text-white'
-            : 'bg-gray-700 text-gray-200 hover:bg-gray-600'
+            : 'bg-stone-800 text-gray-200 hover:bg-gray-600'
         }`}
       >
         {customMode ? '✓ Modo Personalizado' : '⚙️ Personalizar'}
