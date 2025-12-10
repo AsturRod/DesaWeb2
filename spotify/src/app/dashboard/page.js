@@ -1,15 +1,20 @@
 'use client';
 
 
+
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { isAuthenticated, getSpotifyAuthUrl, logout } from '@/lib/auth';
 import { getCurrentUser, generatePlaylist } from '@/lib/spotify';
 import Header from '@/components/Header';
+import MoodWidget from '@/components/widgets/MoodWidget';
 import GenreWidget from '@/components/widgets/GenreWidget';
 import PopularityWidget from '@/components/widgets/PopularityWidget';
 import DecadeWidget from '@/components/widgets/DecadeWidget';
+import ArtistWidget from '@/components/widgets/ArtistWidget';
+import TrackWidget from '@/components/widgets/TrackWidget';
 import PlaylistDisplay from '@/components/PlaylistDisplay';
+
 
 
 export default function DashboardPage(){
@@ -19,15 +24,21 @@ export default function DashboardPage(){
   const [error, setError] = useState(null);
 
 
+
   //Estado de los widgets
+  const [selectedMood, setSelectedMood] = useState(null);
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [selectedPopularity, setSelectedPopularity] = useState([0, 100]);
   const [selectedDecades, setSelectedDecades] = useState([]);
+  const [selectedArtists, setSelectedArtists] = useState([]);
+  const [selectedTracks, setSelectedTracks] = useState([]);
+
 
 
   //Estado de la playlist generada
   const [playlist, setPlaylist] = useState([]);
   const [generatingPlaylist, setGeneratingPlaylist] = useState(false);
+
 
 
   //Redirigir si no está autenticado
@@ -38,9 +49,11 @@ export default function DashboardPage(){
     }
 
 
+
     //Cargar información del usuario
     fetchUser();
   }, [router]);
+
 
 
   async function fetchUser() {
@@ -59,17 +72,22 @@ export default function DashboardPage(){
   }
 
 
+
   //Generar playlist basada en preferencias
   async function handleGeneratePlaylist() {
     setGeneratingPlaylist(true);
     setError(null);
     try {
       const preferences = {
-        artists: [],
+        artists: selectedArtists,
+        tracks: selectedTracks,
         genres: selectedGenres,
         decades: selectedDecades,
-        popularity: selectedPopularity
+        popularity: selectedPopularity,
+        market: 'US',
+        mood: selectedMood
       };
+
 
 
       const tracks = await generatePlaylist(preferences);
@@ -83,14 +101,17 @@ export default function DashboardPage(){
   }
 
 
+
   const handleRemoveTrack = (trackId) => {
     setPlaylist(playlist.filter(track => track.id !== trackId));
   };
 
 
+
   const handleToggleFavorite = (track) => {
     const favorites = JSON.parse(localStorage.getItem('favorite_tracks') || '[]');
     const isFavorite = favorites.find(f => f.id === track.id);
+
 
 
     if (isFavorite) {
@@ -103,9 +124,11 @@ export default function DashboardPage(){
   };
 
 
+
   const handleRefreshPlaylist = async () => {
     await handleGeneratePlaylist();
   };
+
 
 
   if (loading) {
@@ -117,10 +140,12 @@ export default function DashboardPage(){
   }
 
 
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-900 via-black to-black text-white">
       {/* Header */}
       <Header user={user} />
+
 
 
       {/* Main Content */}
@@ -132,10 +157,36 @@ export default function DashboardPage(){
         )}
 
 
+
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Widgets Sidebar */}
-          <div className="lg:col-span-1 space-y-4">
+          <div className="lg:col-span-1 space-y-4 max-h-screen overflow-y-auto">
             <h2 className="text-2xl font-bold mb-6">Preferencias</h2>
+
+
+
+            {/* Mood Widget */}
+            <MoodWidget
+              selectedMood={selectedMood}
+              onMoodChange={setSelectedMood}
+            />
+
+
+
+            {/* Artist Widget */}
+            <ArtistWidget
+              selectedArtists={selectedArtists}
+              onArtistsChange={setSelectedArtists}
+            />
+
+
+
+            {/* Track Widget */}
+            <TrackWidget
+              selectedTracks={selectedTracks}
+              onTracksChange={setSelectedTracks}
+            />
+
 
 
             {/* Genre Widget */}
@@ -145,11 +196,13 @@ export default function DashboardPage(){
             />
 
 
+
             {/* Popularity Widget */}
             <PopularityWidget
               selectedPopularity={selectedPopularity}
               onPopularityChange={setSelectedPopularity}
             />
+
 
 
             {/* Decade Widget */}
@@ -158,15 +211,17 @@ export default function DashboardPage(){
             />
 
 
+
             {/* Botón generate */}
             <button
               onClick={handleGeneratePlaylist}
-              disabled={generatingPlaylist || selectedGenres.length === 0}
-              className="w-full bg-green-500 hover:bg-green-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-black font-bold py-3 px-4 rounded-lg transition"
+              disabled={generatingPlaylist || (selectedGenres.length === 0 && selectedArtists.length === 0 && selectedTracks.length === 0)}
+              className="w-full bg-green-500 hover:bg-green-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-black font-bold py-3 px-4 rounded-lg transition sticky bottom-0"
             >
               {generatingPlaylist ? 'Generando...' : 'Generar Playlist'}
             </button>
           </div>
+
 
 
           {/* Display Playlist */}

@@ -5,7 +5,7 @@ import { useState } from 'react';
 const AVAILABLE_GENRES = [
   'acoustic', 'afrobeat', 'alt-rock', 'alternative', 'ambient',
   'anime', 'black-metal', 'bluegrass', 'blues', 'bossanova',
-  'brazil', 'breakbeat', 'british', 'cantopop', 'chicago-house',
+  'brazil', 'breakbeat', 'british', 'cantopop', 'celtic', 'chicago-house',
   'children', 'chill', 'classical', 'club', 'comedy',
   'country', 'dance', 'dancehall', 'death-metal', 'deep-house',
   'detroit-techno', 'disco', 'disney', 'drum-and-bass', 'dub',

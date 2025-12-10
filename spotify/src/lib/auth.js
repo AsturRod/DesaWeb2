@@ -19,7 +19,7 @@ export function getSpotifyAuthUrl() {
 
   // Guardar el state para validación posterior (prevenir CSRF)
   if (typeof window !== 'undefined') {
-    sessionStorage.setItem('spotify_auth_state', state); //Usando sessionStorage en lugar de localStorage
+    sessionStorage.setItem('spotify_auth_state', state); 
   }
 
   const scope = [
