@@ -1,6 +1,7 @@
 
 // Funciones auxiliares para OAuth y gestión de tokens
 
+
 // Generar string aleatorio para el parámetro 'state'
 export function generateRandomString(length) {
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -11,16 +12,19 @@ export function generateRandomString(length) {
   return text;
 }
 
+
 // Construir URL de autorización de Spotify
 export function getSpotifyAuthUrl() {
   const clientId = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID || '';
   const redirectUri = process.env.NEXT_PUBLIC_REDIRECT_URI || '';
   const state = generateRandomString(16);
 
+
   // Guardar el state para validación posterior (prevenir CSRF)
   if (typeof window !== 'undefined') {
     sessionStorage.setItem('spotify_auth_state', state); 
   }
+
 
   const scope = [
     'user-read-private',
@@ -30,6 +34,7 @@ export function getSpotifyAuthUrl() {
     'playlist-modify-private'
   ].join(' ');
 
+
   const params = new URLSearchParams({
     client_id: clientId,
     response_type: 'code',
@@ -38,12 +43,15 @@ export function getSpotifyAuthUrl() {
     scope: scope
   });
 
+
   return `https://accounts.spotify.com/authorize?${params.toString()}`;
 }
+
 
 // Guardar tokens en localStorage
 export function saveTokens(accessToken, refreshToken, expiresIn) {
   if (typeof window === 'undefined') return;
+
 
   const expirationTime = Date.now() + expiresIn * 1000;
   localStorage.setItem('spotify_token', accessToken);
@@ -51,22 +59,28 @@ export function saveTokens(accessToken, refreshToken, expiresIn) {
   localStorage.setItem('spotify_token_expiration', expirationTime.toString());
 }
 
+
 // Obtener token actual (con verificación de expiración)
 export function getAccessToken() {
   if (typeof window === 'undefined') return null;
 
+
   const token = localStorage.getItem('spotify_token');
   const expiration = localStorage.getItem('spotify_token_expiration');
 
+
   if (!token || !expiration) return null;
+
 
   // Si el token expiró, retornar null
   if (Date.now() > parseInt(expiration)) {
     return null;
   }
 
+
   return token;
 }
+
 
 // Obtener refresh token
 export function getRefreshToken() {
@@ -74,10 +88,12 @@ export function getRefreshToken() {
   return localStorage.getItem('spotify_refresh_token');
 }
 
+
 // Verificar si hay token válido
 export function isAuthenticated() {
   return getAccessToken() !== null;
 }
+
 
 // Cerrar sesión
 export function logout() {

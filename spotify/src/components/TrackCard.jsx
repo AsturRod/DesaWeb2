@@ -1,5 +1,6 @@
 'use client';
 
+
 export default function TrackCard({
   track,
   index,
@@ -12,6 +13,11 @@ export default function TrackCard({
   const duration = `${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
 
   const artistNames = track.artists.map(a => a.name).join(', ');
+
+  const handleOpenInSpotify = () => {
+    const spotifyUrl = `https://open.spotify.com/track/${track.id}`;
+    window.open(spotifyUrl, '_blank');
+  };
 
   return (
     <div className="bg-stone-800 hover:bg-gray-700 rounded p-4 flex items-center justify-between gap-4 transition group">
@@ -45,6 +51,15 @@ export default function TrackCard({
 
       {/* Acciones */}
       <div className="flex items-center gap-2 flex-shrink-0">
+        {/* Botón Abrir en Spotify */}
+        <button
+          onClick={handleOpenInSpotify}
+          className="p-2 rounded text-gray-500 hover:text-green-500 transition"
+          title="Abrir en Spotify"
+        >
+          🎵
+        </button>
+
         {/* Botón Favoritos */}
         <button
           onClick={onToggleFavorite}

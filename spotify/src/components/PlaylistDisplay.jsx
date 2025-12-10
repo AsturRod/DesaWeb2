@@ -1,16 +1,20 @@
 'use client';
 
+
 import { useEffect, useState } from 'react';
 import TrackCard from './TrackCard';
+
 
 export default function PlaylistDisplay({
   tracks,
   onRemoveTrack,
   onToggleFavorite,
   onRefresh,
-  isRefreshing
+  isRefreshing,
+  onSave
 }) {
   const [favoriteIds, setFavoriteIds] = useState(new Set());
+
 
   useEffect(() => {
     // Cargar favoritos del localStorage
@@ -19,8 +23,10 @@ export default function PlaylistDisplay({
     setFavoriteIds(favoriteIdSet);
   }, []);
 
+
   const handleToggleFavorite = (track) => {
     onToggleFavorite(track);
+
 
     // Actualizar estado local
     const newFavorites = new Set(favoriteIds);
@@ -31,6 +37,7 @@ export default function PlaylistDisplay({
     }
     setFavoriteIds(newFavorites);
   };
+
 
   if (tracks.length === 0) {
     return (
@@ -45,6 +52,7 @@ export default function PlaylistDisplay({
     );
   }
 
+
   return (
     <div className=" p-6">
       <div className="flex justify-between items-center mb-6">
@@ -55,14 +63,26 @@ export default function PlaylistDisplay({
           </p>
         </div>
 
-        <button
-          onClick={onRefresh}
-          disabled={isRefreshing}
-          className="bg-green-500 hover:bg-green-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-black font-bold py-2 px-4 rounded transition"
-        >
-          {isRefreshing ? 'Refrescando...' : '🔄 Refrescar'}
-        </button>
+
+        <div className="flex gap-2">
+          <button
+            onClick={onRefresh}
+            disabled={isRefreshing}
+            className="bg-green-500 hover:bg-green-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-black font-bold py-2 px-4 rounded transition"
+          >
+            {isRefreshing ? 'Refrescando...' : '🔄 Refrescar'}
+          </button>
+          {onSave && (
+            <button
+              onClick={onSave}
+              className="bg-green-500 hover:bg-green-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-black font-bold py-2 px-4 rounded transition"
+            >
+              💾 Guardar en Spotify
+            </button>
+          )}
+        </div>
       </div>
+
 
       {/* Tracks List */}
       <div className="space-y-2 max-h-[600px] overflow-y-auto">
@@ -77,6 +97,7 @@ export default function PlaylistDisplay({
           />
         ))}
       </div>
+
 
       {/* Footer Info */}
       <div className="mt-6 pt-4 border-t border-gray-700 text-sm text-gray-400">

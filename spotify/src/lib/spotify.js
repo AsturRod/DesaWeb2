@@ -1,12 +1,8 @@
 // Funciones para hacer peticiones a la API de Spotify
 
-
 import { getAccessToken, getRefreshToken } from '@/lib/auth';
 
-
-
 //Refrescar el token si está expirado
-
 
 async function ensureValidToken() {
   const token = getAccessToken();
@@ -17,7 +13,6 @@ async function ensureValidToken() {
       throw new Error('No authentication token available');
     }
 
-
     try {
       const response = await fetch('/api/refresh-token', {
         method: 'POST',
@@ -25,17 +20,14 @@ async function ensureValidToken() {
         body: JSON.stringify({ refresh_token: refreshToken })
       });
 
-
       if (!response.ok) {
         throw new Error('Token refresh failed');
       }
-
 
       const data = await response.json();
       localStorage.setItem('spotify_token', data.access_token);
       const expirationTime = Date.now() + (data.expires_in * 1000);
       localStorage.setItem('spotify_token_expiration', expirationTime.toString());
-
 
       return data.access_token;
     } catch (error) {
@@ -46,11 +38,8 @@ async function ensureValidToken() {
     }
   }
 
-
   return token;
 }
-
-
 
 //Hacer una petición a la API de Spotify
  
@@ -58,7 +47,6 @@ export async function spotifyRequest(endpoint, options = {}) {
   try {
     const token = await ensureValidToken();
     const url = `https://api.spotify.com/v1${endpoint}`;
-
 
     const response = await fetch(url, {
       ...options,
@@ -69,7 +57,6 @@ export async function spotifyRequest(endpoint, options = {}) {
       }
     });
 
-
     if (response.status === 401) {
       // Token expirado, intentar refrescar
       const newToken = await ensureValidToken();
@@ -79,12 +66,10 @@ export async function spotifyRequest(endpoint, options = {}) {
       });
     }
 
-
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
       throw new Error(`Spotify API error: ${response.status} ${JSON.stringify(error)}`);
     }
-
 
     return await response.json();
   } catch (error) {
@@ -93,16 +78,11 @@ export async function spotifyRequest(endpoint, options = {}) {
   }
 }
 
-
-
 //Obtener información del usuario actual
-
 
 export async function getCurrentUser() {
   return spotifyRequest('/me');
 }
-
-
 
 //Buscar artistas, canciones, etc.
 export async function search(query, type = 'artist', limit = 10) {
@@ -112,26 +92,19 @@ export async function search(query, type = 'artist', limit = 10) {
     limit: limit
   });
 
-
   return spotifyRequest(`/search?${params.toString()}`);
 }
-
-
 
 //Obtener información de un artista
 export async function getArtist(artistId) {
   return spotifyRequest(`/artists/${artistId}`);
 }
 
-
-
 //Obtener top tracks de un artista
  
 export async function getArtistTopTracks(artistId, market = 'US') {
   return spotifyRequest(`/artists/${artistId}/top-tracks?market=${market}`);
 }
-
-
 
 //Obtener canciones top del usuario
  
@@ -142,11 +115,8 @@ export async function getUserTopTracks(limit = 20, offset = 0, timeRange = 'medi
     time_range: timeRange
   });
 
-
   return spotifyRequest(`/me/top/tracks?${params.toString()}`);
 }
-
-
 
 //Obtener artistas top del usuario
  
@@ -157,49 +127,93 @@ export async function getUserTopArtists(limit = 20, offset = 0, timeRange = 'med
     time_range: timeRange
   });
 
-
   return spotifyRequest(`/me/top/artists?${params.toString()}`);
 }
 
+//Crear playlist en Spotify
+export async function createPlaylist(playlistName, trackUris) {
+  try {
+    const user = await getCurrentUser();
+    const userId = user.id;
 
-//Obtener audio features de un track
-export async function getAudioFeatures(trackIds) {
-  const ids = Array.isArray(trackIds) ? trackIds.join(',') : trackIds;
-  return spotifyRequest(`/audio-features?ids=${ids}`);
+    // Crear la playlist
+    const createResponse = await spotifyRequest(`/users/${userId}/playlists`, {
+      method: 'POST',
+      body: JSON.stringify({
+        name: playlistName,
+        description: 'Playlist generada con Playlist Generator',
+        public: false
+      })
+    });
+
+    const playlistId = createResponse.id;
+
+    // Agregar tracks a la playlist (máximo 100 por request)
+    for (let i = 0; i < trackUris.length; i += 100) {
+      const chunk = trackUris.slice(i, i + 100);
+      await spotifyRequest(`/playlists/${playlistId}/tracks`, {
+        method: 'POST',
+        body: JSON.stringify({ uris: chunk })
+      });
+    }
+
+    return createResponse;
+  } catch (error) {
+    console.error('Error creating playlist:', error);
+    throw error;
+  }
 }
 
+//Simular mood usando datos disponibles (popularity, duration, etc)
+function simulateMoodFromTrackData(track, mood) {
+  if (!mood) return true;
 
-//Filtrar tracks por audio features
-function filterByAudioFeatures(tracks, mood) {
-  if (!mood) return tracks;
+  const checks = [];
 
-  return tracks.filter(track => {
-    if (!track.audio_features) return true;
+  // Energy simulado: basado en popularidad y duración
+  // Canciones populares y cortas = más energía
+  if (mood.energy) {
+    const [min, max] = mood.energy;
+    const simulated_energy = (track.popularity / 100) * 0.7 + 
+                            (Math.min(track.duration_ms, 300000) / 300000) * 0.3;
+    // Expandir rango un 20% para mayor flexibilidad
+    checks.push(simulated_energy >= (min - 0.2) && simulated_energy <= (max + 0.2));
+  }
 
-    const features = track.audio_features;
-    const checks = [];
+  // Danceability simulado: canciones populares son más bailable
+  if (mood.danceability) {
+    const [min, max] = mood.danceability;
+    const simulated_danceability = track.popularity / 100;
+    // Expandir rango un 20%
+    checks.push(simulated_danceability >= (min - 0.2) && simulated_danceability <= (max + 0.2));
+  }
 
-    if (mood.energy) {
-      checks.push(features.energy >= mood.energy[0] && features.energy <= mood.energy[1]);
-    }
-    if (mood.valence) {
-      checks.push(features.valence >= mood.valence[0] && features.valence <= mood.valence[1]);
-    }
-    if (mood.danceability) {
-      checks.push(features.danceability >= mood.danceability[0] && features.danceability <= mood.danceability[1]);
-    }
-    if (mood.acousticness) {
-      checks.push(features.acousticness >= mood.acousticness[0] && features.acousticness <= mood.acousticness[1]);
-    }
+  // Valence simulado: canciones recientes tienden a ser más positivas
+  if (mood.valence) {
+    const [min, max] = mood.valence;
+    const year = new Date(track.album?.release_date).getFullYear();
+    const simulated_valence = Math.min(1, (year - 1990) / 34) * 0.6 + (track.popularity / 100) * 0.4;
+    // Expandir rango un 20%
+    checks.push(simulated_valence >= (min - 0.2) && simulated_valence <= (max + 0.2));
+  }
 
-    return checks.length === 0 || checks.every(check => check);
-  });
+  // Acousticness simulado: canciones antiguas y menos populares son más acústicas
+  if (mood.acousticness) {
+    const [min, max] = mood.acousticness;
+    const year = new Date(track.album?.release_date).getFullYear();
+    const simulated_acousticness = Math.max(0, 1 - (track.popularity / 100)) * 0.7 + 
+                                  Math.max(0, (2024 - year) / 100) * 0.3;
+    // Expandir rango un 20%
+    checks.push(simulated_acousticness >= (min - 0.2) && simulated_acousticness <= (max + 0.2));
+  }
+
+  if (checks.length === 0) return true;
+  return checks.every(check => check);
 }
 
-
-//Generar playlist basada en preferencias - SIMPLIFICADO
+//Generar playlist basada en preferencias
 export async function generatePlaylist(preferences) {
-  const { artists = [], tracks = [], genres = [], decades = [], popularity = null, market = 'US', mood = null } = preferences;
+  const { artists = [], tracks = [], genres = [], decades = [], popularity = null, mood = null, market = 'US' } = preferences;
   
   let allTracks = [];
   const selectedTrackIds = new Set(tracks.map(t => t.id));
@@ -232,7 +246,6 @@ export async function generatePlaylist(preferences) {
         }
       } catch (error) {
         console.warn(`Error searching for genre ${genre}:`, error);
-        // Continuar con otros géneros si uno falla
       }
     }
   }
@@ -255,30 +268,7 @@ export async function generatePlaylist(preferences) {
     throw new Error('Selecciona al menos un género, artista o canción');
   }
 
-  // 5. Obtener audio features para filtrar por mood
-  if (mood && allTracks.length > 0) {
-    try {
-      const trackIds = allTracks.filter(t => t.id).map(t => t.id).slice(0, 100);
-      if (trackIds.length > 0) {
-        const features = await getAudioFeatures(trackIds);
-        
-        allTracks = allTracks.map(track => {
-          const feature = features.audio_features?.find(f => f?.id === track.id);
-          return { ...track, audio_features: feature };
-        });
-      }
-    } catch (error) {
-      console.warn('Error fetching audio features:', error);
-      // Continuar sin filtrar por mood si falla
-    }
-  }
-
-  // 6. Filtrar por mood
-  if (mood) {
-    allTracks = filterByAudioFeatures(allTracks, mood);
-  }
-
-  // 7. Filtrar por década (EXCEPTO las canciones seleccionadas)
+  // 5. Filtrar por decade (EXCEPTO las canciones seleccionadas)
   if (decades.length > 0) {
     allTracks = allTracks.filter(track => {
       if (selectedTrackIds.has(track.id)) {
@@ -293,7 +283,7 @@ export async function generatePlaylist(preferences) {
     });
   }
 
-  // 8. Filtrar por popularidad (EXCEPTO las canciones seleccionadas)
+  // 6. Filtrar por popularidad (EXCEPTO las canciones seleccionadas)
   if (popularity) {
     const [min, max] = popularity;
     allTracks = allTracks.filter(track => {
@@ -305,7 +295,20 @@ export async function generatePlaylist(preferences) {
     });
   }
 
-  // 9. Eliminar duplicados y limitar a 30 canciones
+  // 7. Filtrar por mood simulado (usando datos disponibles)
+  if (mood) {
+    const beforeMood = allTracks.length;
+    allTracks = allTracks.filter(track => {
+      // Las canciones seleccionadas nunca se filtran
+      if (selectedTrackIds.has(track.id)) {
+        return true;
+      }
+      return simulateMoodFromTrackData(track, mood);
+    });
+    console.log(`Mood filter (simulated): ${beforeMood} → ${allTracks.length} tracks`);
+  }
+
+  // 8. Eliminar duplicados y limitar a 30 canciones
   const uniqueMap = new Map();
   
   for (const track of tracks) {
