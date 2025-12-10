@@ -139,7 +139,7 @@ export default function DecadeWidget({ onDecadesChange }) {
                   <button
                     key={decade.label}
                     onClick={() => handleDecadeChange(decade)}
-                    className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-black text-xs font-semibold rounded-full transition transform hover:scale-105"
+                    className="inline-flex items-center gap-1 px-3 py-1 bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-black text-xs font-semibold rounded-full transition transform hover:scale-105"
                   >
                     {decade.label}
                     <span className="ml-1 font-bold">×</span>

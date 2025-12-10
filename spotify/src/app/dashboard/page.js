@@ -145,14 +145,14 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-900 via-black to-black flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-green-900 via-black to-black flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-900 via-black to-black text-white">
+    <div className="min-h-screen bg-linear-to-br from-green-900 via-black to-black text-white">
       
       <Header user={user} />
 
@@ -210,7 +210,7 @@ export default function DashboardPage() {
                     selectedArtists.length === 0 &&
                     selectedTracks.length === 0)
                 }
-                className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-black font-bold py-3 px-4 rounded-lg transition transform hover:scale-105"
+                className="w-full bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-black font-bold py-3 px-4 rounded-lg transition transform hover:scale-105"
               >
                 {generatingPlaylist ? (
                   <span className="flex items-center justify-center gap-2">
@@ -242,7 +242,7 @@ export default function DashboardPage() {
           
           <button
             onClick={() => setShowWidgetsSidebar(!showWidgetsSidebar)}
-            className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-black font-bold py-3 px-4 rounded-lg transition flex items-center justify-between md:hidden"
+            className="w-full bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-black font-bold py-3 px-4 rounded-lg transition flex items-center justify-between md:hidden"
           >
             <span>⚙️ Preferencias</span>
             <span className="text-xl">{showWidgetsSidebar ? '▼' : '▶'}</span>
@@ -290,7 +290,7 @@ export default function DashboardPage() {
                     selectedArtists.length === 0 &&
                     selectedTracks.length === 0)
                 }
-                className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-black font-bold py-3 px-4 rounded-lg transition transform hover:scale-105"
+                className="w-full bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-black font-bold py-3 px-4 rounded-lg transition transform hover:scale-105"
               >
                 {generatingPlaylist ? (
                   <span className="flex items-center justify-center gap-2">
@@ -343,7 +343,7 @@ export default function DashboardPage() {
                   selectedArtists.length === 0 &&
                   selectedTracks.length === 0)
               }
-              className="md:col-span-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-black font-bold py-3 px-4 rounded-lg transition transform hover:scale-105"
+              className="md:col-span-2 bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-black font-bold py-3 px-4 rounded-lg transition transform hover:scale-105"
             >
               {generatingPlaylist ? (
                 <span className="flex items-center justify-center gap-2">
@@ -373,7 +373,7 @@ export default function DashboardPage() {
       
       {showSaveModal && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg p-6 w-full max-w-md border border-green-500/30 shadow-2xl">
+          <div className="bg-linear-to-br from-gray-800 to-gray-900 rounded-lg p-6 w-full max-w-md border border-green-500/30 shadow-2xl">
             <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
               💾 Guardar Playlist
             </h3>
@@ -397,7 +397,7 @@ export default function DashboardPage() {
               <button
                 onClick={handleSavePlaylist}
                 disabled={savingPlaylist || !playlistName.trim()}
-                className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-black font-bold py-2 px-4 rounded-lg transition transform hover:scale-105"
+                className="flex-1 bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-black font-bold py-2 px-4 rounded-lg transition transform hover:scale-105"
               >
                 {savingPlaylist ? 'Guardando...' : 'Guardar'}
               </button>

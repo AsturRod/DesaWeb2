@@ -96,7 +96,7 @@ export default function TrackWidget({ selectedTracks = [], onTracksChange }) {
                     {track.artists.map(a => a.name).join(', ')}
                   </div>
                 </div>
-                <div className="text-xs text-gray-400 flex-shrink-0">
+                <div className="text-xs text-gray-400 shrink-0">
                   {Math.floor(track.duration_ms / 60000)}:{String(Math.floor((track.duration_ms % 60000) / 1000)).padStart(2, '0')}
                 </div>
               </button>
@@ -118,7 +118,7 @@ export default function TrackWidget({ selectedTracks = [], onTracksChange }) {
                   <img 
                     src={track.album.images[0].url} 
                     alt={track.name}
-                    className="w-6 h-6 rounded flex-shrink-0"
+                    className="w-6 h-6 rounded shrink-0"
                   />
                 )}
                 <div className="min-w-0">
@@ -130,7 +130,7 @@ export default function TrackWidget({ selectedTracks = [], onTracksChange }) {
               </div>
               <button
                 onClick={() => handleRemoveTrack(track.id)}
-                className="text-gray-400 hover:text-red-500 font-semibold flex-shrink-0 ml-2"
+                className="text-gray-400 hover:text-red-500 font-semibold shrink-0 ml-2"
               >
                 ✕
               </button>

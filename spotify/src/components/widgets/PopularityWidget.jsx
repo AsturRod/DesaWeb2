@@ -49,7 +49,7 @@ export default function PopularityWidget({ selectedPopularity, onPopularityChang
       {isOpen && (
         <div className="border-t border-gray-700 p-4 space-y-4 ">
           
-          <div className="p-3 bg-gradient-to-r from-purple-900/30 to-purple-800/30 border border-purple-700/50 rounded-lg text-center">
+          <div className="p-3 bg-linear-to-r from-purple-900/30 to-purple-800/30 border border-purple-700/50 rounded-lg text-center">
             <p className="text-white font-bold text-lg">
               {selectedPopularity[0]} - {selectedPopularity[1]}
             </p>

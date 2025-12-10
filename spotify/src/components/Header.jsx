@@ -46,7 +46,7 @@ export default function Header({ user }) {
         </nav>
 
         {/* User Info & Logout */}
-        <div className="flex items-center gap-4 flex-shrink-0">
+        <div className="flex items-center gap-4 shrink-0">
           {user && (
             <div className="flex items-center gap-3">
               {user.images && user.images[0] && (

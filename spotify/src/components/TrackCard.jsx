@@ -32,7 +32,7 @@ export default function TrackCard({
           <img
             src={track.album.images[0].url}
             alt={track.name}
-            className="w-12 h-12 rounded flex-shrink-0"
+            className="w-12 h-12 rounded shrink-0"
           />
         )}
 
@@ -44,12 +44,12 @@ export default function TrackCard({
       </div>
 
       
-      <div className="text-sm text-gray-400 flex-shrink-0 w-12 text-right">
+      <div className="text-sm text-gray-400 shrink-0 w-12 text-right">
         {duration}
       </div>
 
       
-      <div className="flex items-center gap-2 flex-shrink-0">
+      <div className="flex items-center gap-2 shrink-0">
         
         <button
           onClick={handleOpenInSpotify}

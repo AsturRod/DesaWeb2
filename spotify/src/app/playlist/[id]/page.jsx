@@ -83,7 +83,7 @@ export default function PlaylistDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-900 via-black to-black flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-green-900 via-black to-black flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
       </div>
     );
@@ -91,7 +91,7 @@ export default function PlaylistDetailPage() {
 
   if (!playlist) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-900 via-black to-black text-white">
+      <div className="min-h-screen bg-linear-to-br from-green-900 via-black to-black text-white">
         <Header user={user} />
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="bg-gray-800 rounded-lg p-12 text-center">
@@ -109,7 +109,7 @@ export default function PlaylistDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-900 via-black to-black text-white">
+    <div className="min-h-screen bg-linear-to-br from-green-900 via-black to-black text-white">
       <Header user={user} />
 
       <div className="max-w-7xl mx-auto px-4 py-8">

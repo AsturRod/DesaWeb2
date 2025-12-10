@@ -82,7 +82,7 @@ export default function CallbackPage() {
   Muestra estados de carga y error con un diseño similar a spotify con un gradiente verde y negro.*/
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-900 via-black to-black flex items-center justify-center p-4">
+      <div className="min-h-screen bg-linear-to-br from-green-900 via-black to-black flex items-center justify-center p-4">
         <div className="max-w-md w-full text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
           <h1 className="text-2xl font-bold text-white mb-2">Autenticando...</h1>
@@ -98,7 +98,7 @@ export default function CallbackPage() {
   
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-900 via-black to-black flex items-center justify-center p-4">
+      <div className="min-h-screen bg-linear-to-br from-green-900 via-black to-black flex items-center justify-center p-4">
         <div className="max-w-md w-full text-center">
           <div className="bg-red-900 border border-red-700 rounded-lg p-6 mb-4">
             <h2 className="text-xl font-bold text-red-300 mb-2">❌ Error de Autenticación</h2>

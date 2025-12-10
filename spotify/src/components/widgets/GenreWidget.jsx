@@ -83,7 +83,7 @@ export default function GenreWidget({ selectedGenres, onGenresChange }) {
                   <button
                     key={genre}
                     onClick={() => handleGenreClick(genre)}
-                    className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-black text-sm px-3 py-1 rounded-full font-semibold transition transform hover:scale-105 flex items-center gap-1"
+                    className="bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-black text-sm px-3 py-1 rounded-full font-semibold transition transform hover:scale-105 flex items-center gap-1"
                   >
                     {genre}
                     <span className="ml-1 font-bold">×</span>
