@@ -14,7 +14,7 @@ export default function Header({ user }) {
   return (
     <header className="bg-black bg-opacity-80 border-b border-green-500 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-        {/* Logo/Title - Más a la izquierda */}
+        
         <div className="shrink-0 cursor-pointer" onClick={() => router.push('/dashboard')}>
           <img
             src="/taste_mixer_logo.png"
@@ -70,7 +70,7 @@ export default function Header({ user }) {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
+      {/* Móvil */}
       <div className="md:hidden border-t border-gray-700 px-4 py-3 flex gap-2 overflow-x-auto">
         <button
           onClick={() => router.push('/dashboard')}
